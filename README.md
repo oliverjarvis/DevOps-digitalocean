@@ -14,5 +14,8 @@ We forgot to change the test file!
 (Good to use 2To3 on that test file)
 
 ----------- LECTURE 2 -----------
+We went though the docker exercise and started talking about how to structure our git (having a folder for the old minitwit application and another one for the one we are refactoring). We creating a docker file and refactoring to Go. 
+
+ 
 
 
