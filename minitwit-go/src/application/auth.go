@@ -4,6 +4,7 @@ import (
 	"errors"
 	"go-minitwit/src/util"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
@@ -49,7 +50,7 @@ func HandleRegister(context *gin.Context, db *gorm.DB) error {
 	return nil
 }
 
-func HandleLogin(context *gin.Context, db *gorm.DB) error {
+func HandleLogin(context *gin.Context, db *gorm.DB, session sessions.Session) error {
 	var login Login
 	if err := context.ShouldBind(&login); err != nil {
 		var ve validator.ValidationErrors
@@ -64,9 +65,12 @@ func HandleLogin(context *gin.Context, db *gorm.DB) error {
 		return errors.New("Invalid username")
 	}
 
-	if util.CheckPasswordHash(login.Password, user.PW_hash) {
+	if !util.PasswordMatch(login.Password, user.PW_hash) {
 		return errors.New("Invalid password")
 	}
+
+	session.Set("userID", user.ID)
+	session.Save()
 
 	return nil
 }

@@ -1,7 +1,5 @@
 {{ define "register" }}
-{{/* using "layout.tmpl" */}}
-{{ block "title" .}} Sign Up {{ end }}
-{{ block "body" .}}
+{{/* using "layout" */}}
   <h2>Sign Up</h2>
   {{ if .Error }}
     <div class=error><strong>Error:</strong> {{ .Error }} </div> 
@@ -19,6 +17,5 @@
       </dl>
       <div class=actions><input type=submit value="Sign Up"></div>
     </form>
-  {{ end }}
  {{ end }}
 {{ end }}

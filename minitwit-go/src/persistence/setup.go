@@ -17,7 +17,7 @@ func GetDbConnection() *gorm.DB {
 	return db
 }
 
-func InitDB() {
+func ConfigurePersistence() {
 	db := GetDbConnection()
 
 	applyMigrations(db)

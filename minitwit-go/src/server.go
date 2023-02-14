@@ -8,9 +8,9 @@ import (
 )
 
 func main() {
-	r := gin.Default()
-	persistence.InitDB()
-	web.MapControllers(r)
+	router := gin.Default()
+	persistence.ConfigurePersistence()
+	web.ConfigureWeb(router)
 
-	r.Run()
+	router.Run()
 }
