@@ -1,14 +1,14 @@
 package persistence
 
 import (
-	"go-minitwit/src/models"
+	"go-minitwit/src/application"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func getDbConnection() *gorm.DB {
-	dsn := "host=minitwit_db user=postgres password=postgres dbname=postgres port=5432 sslmode=disable"
+func GetDbConnection() *gorm.DB {
+	dsn := "host=localhost user=postgres password=postgres dbname=postgres port=5432 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect to database")
@@ -18,13 +18,13 @@ func getDbConnection() *gorm.DB {
 }
 
 func InitDB() {
-	db := getDbConnection()
+	db := GetDbConnection()
 
 	applyMigrations(db)
 	seed(db)
 }
 
 func applyMigrations(db *gorm.DB) {
-	db.AutoMigrate(&models.User{})
-	db.AutoMigrate(&models.Message{})
+	db.AutoMigrate(&application.User{})
+	db.AutoMigrate(&application.Message{})
 }

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go-minitwit/src/controllers"
 	"go-minitwit/src/persistence"
+	"go-minitwit/src/web"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,7 +10,7 @@ import (
 func main() {
 	r := gin.Default()
 	persistence.InitDB()
-	controllers.MapControllers(r)
+	web.MapControllers(r)
 
 	r.Run()
 }
