@@ -56,5 +56,5 @@ func HandleRegister(context *gin.Context) {
 		return
 	}
 
-	context.Redirect(http.StatusOK, "/api/v1/login")
+	context.HTML(http.StatusOK, "login", gin.H{})
 }
