@@ -1,6 +1,6 @@
-{{ define "login" }}
-{{/* using "layout" */}}
+{{ template "title" .}}
   <h2>Sign In</h2>
+{{ template "body" .}}
   {{ if .Error }}
     <div class=error><strong>Error:</strong> {{ .Error }}</div>
   {{ else }}
@@ -14,4 +14,4 @@
         <div class=actions><input type=submit value="Sign In"></div>
     </form>
  {{ end }}
-{{ end }}
+{{ template "footer" }}
