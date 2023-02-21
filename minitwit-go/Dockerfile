@@ -1,15 +1,25 @@
-FROM golang:1.19
+FROM golang:bullseye
 
+# Set the working directory
 WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
-RUN go mod download && go mod verify
+RUN go mod init minitwit 
 
-COPY src /app/src
-COPY src/web/templates /app/src/web/templates
-RUN go build /app/src/server.go
+RUN go install github.com/cosmtrek/air@latest
 
+#RUN go mod download
+# Copy the server code into the container
+#COPY . .
+
+RUN go get ./...
+
+# Make port 8080 available to the host
 EXPOSE 8080
 
-CMD ["/app/server"]
+# Build and run the server when the container is started
+#RUN go build /app/server.go
+#ENTRYPOINT ./server
+
+WORKDIR /app/src
+
+CMD ["air"]

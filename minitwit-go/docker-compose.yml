@@ -13,18 +13,22 @@ services:
       - db:/var/lib/postgresql/data
       
   server:
-        container_name: minitwit_server
-        build:
-          context: .
-          dockerfile: Dockerfile
-        ports:
-          - "8080:8080"
-        restart: always
-        links:
-          - db:database
-        depends_on:
-          - db
+      container_name: minitwit
+      build:
+        context: .
+        dockerfile: Dockerfile
+      ports:
+        - "8080:8080"
+      restart: always
+      links:
+        - db:database
+      depends_on:
+        - db
+      volumes:
+        - ./:/app
 
 volumes:
     db:
       driver: local
+    server:
+      external: false
