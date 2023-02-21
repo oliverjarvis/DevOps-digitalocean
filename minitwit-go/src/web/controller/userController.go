@@ -14,7 +14,6 @@ func MapUserEndpoints(router *gin.Engine) {
 }
 
 func followUser(context *gin.Context) {
-	println("HERE TEMP")
 	userID := abortIfNoUserID(context)
 	username := context.Query("username")
 	err := application.FollowUser(persistence.GetDbConnection(), userID, username)
@@ -27,8 +26,6 @@ func followUser(context *gin.Context) {
 
 func unfollowUser(context *gin.Context) {
 	userID := abortIfNoUserID(context)
-	println("USERCONTROLLER")
-	println(userID)
 	username := context.Query("username")
 	err := application.UnfollowUser(persistence.GetDbConnection(), userID, username)
 	if err != nil {

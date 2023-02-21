@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func MapTimelineEndpoints(router *gin.Engine) {
@@ -15,19 +16,17 @@ func MapTimelineEndpoints(router *gin.Engine) {
 }
 
 func renderTimeline(context *gin.Context) {
-	userID := getCurrentUserId(context)
-	if userID == 0 {
+	db := persistence.GetDbConnection()
+	currUser := getCurrentUser(context, db)
+	if currUser == nil {
 		renderPublicTimeline(context)
 		return
 	}
 
-	db := persistence.GetDbConnection()
-	user, _ := application.GetUserByID(db, userID)
-	messages := application.GetMessagesByUserID(db, userID)
-	println(len(messages))
+	messages := application.GetMessagesByUserID(db, currUser.ID)
 	context.HTML(http.StatusOK, "timeline.html", gin.H{
 		"Endpoint": "/",
-		"User":     user,
+		"User":     currUser,
 		"Messages": messages,
 	})
 }
@@ -48,16 +47,23 @@ func renderUserTimeline(context *gin.Context) {
 		context.AbortWithError(http.StatusNotFound, err)
 	}
 
-	currUser, _ := application.GetUserByID(db, getCurrentUserId(context))
-	followed := application.IsUserFollowing(db, currUser.ID, profileUser.ID)
+	var endpoint string = "user-timeline"
+	currUser := getCurrentUser(context, db)
 	messages := application.GetMessagesByUserID(db, profileUser.ID)
-	var endpoint string
-	if currUser.ID == profileUser.ID {
-		endpoint = "/"
-	} else {
-		endpoint = "user-timeline"
+	if currUser == nil {
+		context.HTML(http.StatusOK, "timeline.html", gin.H{
+			"Endpoint":    endpoint,
+			"Messages":    messages,
+			"ProfileUser": profileUser,
+		})
+		return
 	}
 
+	if currUser.ID == profileUser.ID {
+		endpoint = "/"
+	}
+
+	followed := application.IsUserFollowing(db, currUser.ID, profileUser.ID)
 	context.HTML(http.StatusOK, "timeline.html", gin.H{
 		"Endpoint":    endpoint,
 		"User":        currUser,
@@ -65,4 +71,14 @@ func renderUserTimeline(context *gin.Context) {
 		"ProfileUser": profileUser,
 		"Followed":    followed,
 	})
+}
+
+func getCurrentUser(context *gin.Context, db *gorm.DB) *application.User {
+	currUserId := getCurrentUserId(context)
+	if currUserId != 0 {
+		user, _ := application.GetUserByID(db, getCurrentUserId(context))
+		return &user
+	}
+
+	return nil
 }

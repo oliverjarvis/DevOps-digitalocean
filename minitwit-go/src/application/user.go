@@ -2,6 +2,7 @@ package application
 
 import (
 	"errors"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -47,26 +48,13 @@ func FollowUser(db *gorm.DB, currUserID uint, usernameToFollow string) error {
 	return nil
 }
 
-type NamedArgument struct {
-	UserID     uint
-	FollowerID uint
-}
-
 func UnfollowUser(db *gorm.DB, currUserID uint, usernameToUnFollow string) error {
 	userToUnFollow, err := GetUserByUsername(db, usernameToUnFollow)
-	// currUser, _ := GetUserByID(db, currUserID)
 	if err != nil {
 		return err
 	}
 
-	db.Unscoped().Model(&userToUnFollow).Where("follower_id = ?", currUserID).Association("Followers").Delete(currUserID)
-	db.Unscoped().Model(&userToUnFollow).Association("Followers").Delete(currUserID)
-	db.Unscoped().Raw("DELETE from user_followers WHERE user_id = @UserID AND follower_id = @FollowerID",
-		NamedArgument{
-			UserID:     userToUnFollow.ID,
-			FollowerID: currUserID,
-		})
-	// db.Save(userToUnFollow)
+	db.Unscoped().Exec("DELETE from user_followers WHERE user_id =" + strconv.Itoa(int(userToUnFollow.ID)) + " AND follower_id = " + strconv.Itoa(int(currUserID)))
 	return nil
 }
 
