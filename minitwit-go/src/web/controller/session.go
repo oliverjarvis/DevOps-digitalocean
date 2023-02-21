@@ -1,6 +1,9 @@
 package controller
 
 import (
+	"errors"
+	"net/http"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -21,4 +24,20 @@ func getCurrentUserId(context *gin.Context) uint {
 	}
 
 	return 0
+}
+
+func abortIfNoUserID(context *gin.Context) uint {
+	userID := getCurrentUserId(context)
+	if userID == 0 {
+		context.AbortWithError(http.StatusUnauthorized, errors.New("Invalid session"))
+		return 0
+	}
+
+	return userID
+}
+
+func clearSession(context *gin.Context) {
+	session := sessions.Default(context)
+	session.Clear()
+	session.Save()
 }

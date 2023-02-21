@@ -29,19 +29,24 @@ func GetAllMessages(db *gorm.DB) []MessageDTO {
 	return toMessageDTO(db, messages)
 }
 
-func GetMessagesByUser(db *gorm.DB, userID uint) []MessageDTO {
+func GetMessagesByUserID(db *gorm.DB, userID uint) []MessageDTO {
 	var messages []Message
-	db.Find(&messages, userID)
+	db.Where(&Message{UserID: userID}).Find(&messages)
 
 	return toMessageDTO(db, messages)
 }
 
+func AddMessage(db *gorm.DB, userID uint, text string) {
+	message := Message{UserID: userID, Text: text}
+	db.Create(&message)
+	db.Save(&message)
+}
+
 func toMessageDTO(db *gorm.DB, messages []Message) []MessageDTO {
 	var messageDTOs []MessageDTO
-	var user User
-	db.Find(&user)
-	var avatarURL = getAvatarURL(user.Email)
 	for _, message := range messages {
+		user, _ := GetUserByID(db, message.UserID)
+		var avatarURL = getAvatarURL(user.Email)
 		messageDTO := MessageDTO{
 			CreatedAt: message.CreatedAt.Format("2006-01-02"),
 			Username:  user.Username,
@@ -55,9 +60,9 @@ func toMessageDTO(db *gorm.DB, messages []Message) []MessageDTO {
 }
 
 func getAvatarURL(email string) string {
-	email_md5 := fmt.Sprintf("%s", md5.Sum([]byte(email)))
-	hex_md5_email := hex.EncodeToString([]byte(email_md5))
-	url := fmt.Sprintf("https://www.gravatar.com/avatar/%s?d=identicon&s=48", hex_md5_email)
+	emailMD5 := fmt.Sprintf("%s", md5.Sum([]byte(email)))
+	emailHex := hex.EncodeToString([]byte(emailMD5))
+	url := fmt.Sprintf("https://www.gravatar.com/avatar/%s?d=identicon&s=48", emailHex)
 
 	return url
 }

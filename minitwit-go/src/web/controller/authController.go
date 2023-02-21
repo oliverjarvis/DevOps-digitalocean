@@ -14,11 +14,12 @@ func MapAuthEndpoints(router *gin.Engine) {
 	router.POST("/login", handleLogin)
 	router.GET("/register", renderRegisterPage)
 	router.POST("/register", handleRegister)
+	router.GET("/logout", handleLogout)
 }
 
 func renderLoginPage(context *gin.Context) {
 	if getCurrentUserId(context) != 0 {
-		context.HTML(http.StatusOK, "timeline.html", gin.H{})
+		context.Redirect(http.StatusFound, "/")
 		return
 	}
 
@@ -31,12 +32,12 @@ func handleLogin(context *gin.Context) {
 		return
 	}
 
-	context.HTML(http.StatusCreated, "timeline.html", gin.H{})
+	context.Redirect(http.StatusFound, "/")
 }
 
 func renderRegisterPage(context *gin.Context) {
 	if getCurrentUserId(context) != 0 {
-		context.HTML(http.StatusAccepted, "register.html", gin.H{})
+		context.Redirect(http.StatusFound, "/login")
 		return
 	}
 
@@ -49,5 +50,10 @@ func handleRegister(context *gin.Context) {
 		return
 	}
 
-	context.HTML(http.StatusOK, "login.html", gin.H{})
+	context.Redirect(http.StatusFound, "/login")
+}
+
+func handleLogout(context *gin.Context) {
+	clearSession(context)
+	context.Redirect(http.StatusFound, "/public")
 }
