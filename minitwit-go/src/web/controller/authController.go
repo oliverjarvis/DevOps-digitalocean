@@ -32,7 +32,7 @@ func handleLogin(context *gin.Context) {
 		return
 	}
 
-	context.Redirect(http.StatusFound, "/")
+	context.HTML(http.StatusOK, "login.html", gin.H{})
 }
 
 func renderRegisterPage(context *gin.Context) {
