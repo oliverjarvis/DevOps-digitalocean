@@ -16,5 +16,7 @@ func ConfigureWeb(router *gin.Engine) {
 
 func mapEndpoints(router *gin.Engine) {
 	controller.MapAuthEndpoints(router)
+	controller.MapUserEndpoints(router)
 	controller.MapTimelineEndpoints(router)
+	controller.MapMessageEndpoints(router)
 }

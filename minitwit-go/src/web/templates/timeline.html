@@ -1,31 +1,31 @@
 
-{{ template "title" .}}
-  {{ if eq .Request.Endpoint "public_timeline" }}
+{{ template "title" . }}
+  {{ if eq .Endpoint "public-timeline" }}
     <h2> Public Timeline </h2>
-  {{ else if eq .Request.Endpoint "user_timeline" }}
-    <h2> {{ .Profile_user.username }}'s Timeline </h2>
+  {{ else if eq .Endpoint "user-timeline" }}
+    <h2> {{ .ProfileUser.Username }}'s Timeline </h2>
   {{ else }}
    <h2> My Timeline </h2>
   {{ end }}
-{{ template "body" .}}
 
+{{ template "body" . }}
   {{ if .User }}
-    {{ if eq .Request.Endpoint "user_timeline" }}
+    {{ if eq .Endpoint "user-timeline" }}
       <div class=followstatus>
-      {{ if eq .User.ID .Profile_user.ID }}
+      {{ if eq .User.ID .ProfileUser.ID }}
         This is you!
       {{ else if .Followed }}
         You are currently following this user.
-        <a class=unfollow href="localhost:8080/unfollow">Unfollow user</a>.
+        <a class=unfollow href="http://localhost:8080/unfollow?username={{ .ProfileUser.Username }}">Unfollow user</a>.
       {{ else }}
         You are not yet following this user.
-        <a class=follow href="localhost:8080/follow">Follow user</a>.
+        <a class=follow href="http://localhost:8080/follow?username={{ .ProfileUser.Username }}">Follow user</a>.
       {{ end }}
       </div>
-    {{ else if eq .Request.endpoint "timeline" }}
+    {{ else if eq .Endpoint "/" }}
       <div class=twitbox>
-        <h3>What's on your mind {{ .User.username }}?</h3>
-        <form action="localhost:8080/add_message" method=post>
+        <h3>What's on your mind {{ .User.Username }}?</h3>
+        <form action="http://localhost:8080/add_message" method=post>
           <p><input type=text name=text size=60><!--
           --><input type=submit value="Share">
         </form>
@@ -36,7 +36,7 @@
   {{ if .Messages }}
     {{ range .Messages}}
     <li><img src="{{ .AvatarURL }}"><p>
-      <strong><a href="localhost:8080/timeline">{{ .Username }}</a></strong>
+      <strong><a href="http://localhost:8080/user-timeline?username={{ .Username }}">{{ .Username }}</a></strong>
       {{ .Text }}
       <small>&mdash; {{ .CreatedAt }}</small>
     {{ end }}
@@ -44,4 +44,5 @@
     <li><em>There's no message so far.</em>
   {{ end }}
   </ul>
+
   {{ template "footer" }}
