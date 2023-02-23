@@ -19,4 +19,6 @@ func mapEndpoints(router *gin.Engine) {
 	controller.MapUserEndpoints(router)
 	controller.MapTimelineEndpoints(router)
 	controller.MapMessageEndpoints(router)
+	controller.MapJSONMessageEndpoints(router)
+	controller.MapJSONAuthEndpoints(router)
 }

@@ -16,10 +16,10 @@ type Message struct {
 }
 
 type MessageDTO struct {
-	CreatedAt string
-	Username  string
-	Text      string
-	AvatarURL string
+	CreatedAt string `json:"pub_date"`
+	Username  string `json:"user"`
+	Text      string `json:"content"`
+	AvatarURL string `json:"-"`
 }
 
 func GetAllMessages(db *gorm.DB) []MessageDTO {
@@ -29,9 +29,24 @@ func GetAllMessages(db *gorm.DB) []MessageDTO {
 	return toMessageDTO(db, messages)
 }
 
+func GetFirstNMessages(db *gorm.DB, n int) []MessageDTO {
+	var messages []Message
+	db.Limit(n).Where(&Message{flagged: false}).Find(&messages)
+
+	return toMessageDTO(db, messages)
+}
+
 func GetMessagesByUserID(db *gorm.DB, userID uint) []MessageDTO {
 	var messages []Message
 	db.Where(&Message{UserID: userID}).Find(&messages)
+
+	return toMessageDTO(db, messages)
+}
+
+func GetNMessagesByUsername(db *gorm.DB, username string, n int) []MessageDTO {
+	user, _ := GetUserByUsername(db, username)
+	var messages []Message
+	db.Limit(n).Where(&Message{UserID: user.ID, flagged: false}).Find(&messages)
 
 	return toMessageDTO(db, messages)
 }
