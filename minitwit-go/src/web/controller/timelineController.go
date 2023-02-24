@@ -32,9 +32,12 @@ func renderTimeline(context *gin.Context) {
 }
 
 func renderPublicTimeline(context *gin.Context) {
-	messages := application.GetAllMessages(persistence.GetDbConnection())
+	db := persistence.GetDbConnection()
+	currUser := getCurrentUser(context, db)
+	messages := application.GetAllMessages(db)
 	context.HTML(http.StatusOK, "timeline.html", gin.H{
-		"Endpoint": "public-timeline",
+		"Endpoint": "public",
+		"User": currUser,
 		"Messages": messages,
 	})
 }

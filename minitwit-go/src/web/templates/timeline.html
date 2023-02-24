@@ -1,6 +1,6 @@
 
 {{ template "title" . }}
-  {{ if eq .Endpoint "public-timeline" }}
+  {{ if eq .Endpoint "public" }}
     <h2> Public Timeline </h2>
   {{ else if eq .Endpoint "user-timeline" }}
     <h2> {{ .ProfileUser.Username }}'s Timeline </h2>

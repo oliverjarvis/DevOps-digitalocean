@@ -11,10 +11,10 @@ import (
 )
 
 type Register struct {
-	Username  string `form:"username" binding:"required,min=1"`
-	Email     string `form:"email" binding:"required,email"`
-	Password  string `form:"password" binding:"required,min=1"`
-	Password2 string `form:"password2" binding:"required,min=1"`
+	Username  string `json:"username" form:"username" binding:"required,min=1"`
+	Email     string `json:"email" form:"email" binding:"required,email"`
+	Password  string `json:"pwd" form:"pwd" binding:"required,min=1"`
+	Password2 string `form:"password2"`
 }
 
 type Login struct {
@@ -31,21 +31,20 @@ func HandleRegister(context *gin.Context, db *gorm.DB) error {
 		}
 	}
 
-	if register.Password != register.Password2 {
-		return errors.New("Passwords don't match")
-	}
+	var existingUser = []User{}
+	db.Where(&User{Username: register.Username}).Find(&existingUser)
 
-	var existingUser = User{Username: register.Username}
-	var result = db.Find(&existingUser)
-	if result != nil {
+	if len(existingUser) != 0 {
 		return errors.New("The username is already taken")
 	}
 
-	db.Save(User{
+	new_user := User{
 		Username: register.Username,
 		Email:    register.Email,
 		PW_hash:  util.HashPassword(register.Password),
-	})
+	}
+
+	db.Create(&new_user)
 
 	return nil
 }
@@ -59,17 +58,18 @@ func HandleLogin(context *gin.Context, db *gorm.DB, session sessions.Session) er
 		}
 	}
 
-	var user = User{Username: login.Username}
-	var result = db.Find(&user)
-	if result == nil {
+	var user = []User{}
+	db.Where(&User{Username: login.Username}).Find(&user)
+
+	if len(user) == 0 {
 		return errors.New("Invalid username")
 	}
 
-	if !util.PasswordMatch(login.Password, user.PW_hash) {
+	if !util.PasswordMatch(login.Password, user[0].PW_hash) {
 		return errors.New("Invalid password")
 	}
 
-	session.Set("userID", user.ID)
+	session.Set("userID", user[0].ID)
 	session.Save()
 
 	return nil

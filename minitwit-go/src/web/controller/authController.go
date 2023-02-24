@@ -12,8 +12,8 @@ import (
 func MapAuthEndpoints(router *gin.Engine) {
 	router.GET("/login", renderLoginPage)
 	router.POST("/login", handleLogin)
-	router.GET("/register", renderRegisterPage)
-	router.POST("/register", handleRegister)
+	router.GET("/register-user", renderRegisterPage)
+	router.POST("/register-user", handleRegister)
 	router.GET("/logout", handleLogout)
 }
 
@@ -31,8 +31,7 @@ func handleLogin(context *gin.Context) {
 		context.HTML(http.StatusBadRequest, "login.html", gin.H{"Error": err.Error()})
 		return
 	}
-
-	context.HTML(http.StatusOK, "login.html", gin.H{})
+	context.Redirect(http.StatusFound, "/")
 }
 
 func renderRegisterPage(context *gin.Context) {
