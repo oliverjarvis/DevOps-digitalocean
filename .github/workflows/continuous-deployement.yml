@@ -9,6 +9,7 @@ on:
       - master
       - digital-ocean
       
+      
   # allow manual triggers for now too
   workflow_dispatch:
     manual: true
