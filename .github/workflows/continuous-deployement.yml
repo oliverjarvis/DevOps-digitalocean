@@ -7,6 +7,7 @@ on:
     branches:
       - main
       - master
+      - do
       
   # allow manual triggers for now too
   workflow_dispatch:
