@@ -25,4 +25,4 @@ EXPOSE 8080
 #RUN go build /app/server.go
 #ENTRYPOINT ./server
 
-CMD ["app/src/server"]
+CMD ["app/server"]
