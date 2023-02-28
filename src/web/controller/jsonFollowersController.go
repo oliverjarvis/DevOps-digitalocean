@@ -76,7 +76,6 @@ func jsonGetFollowersToUser(context *gin.Context) {
 	userNameListToReturn := []string{}
 	for _, user := range users {
 		userNameListToReturn = append(userNameListToReturn, user.Username)
-		println(user.Username)
 	}
 
 	usernames, err := json.Marshal(map[string]interface{}{"follows": userNameListToReturn})
