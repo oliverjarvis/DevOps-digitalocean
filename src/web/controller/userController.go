@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"go-minitwit/src/application"
 	"go-minitwit/src/persistence"
 	"net/http"
@@ -14,7 +15,12 @@ func MapUserEndpoints(router *gin.Engine) {
 }
 
 func followUser(context *gin.Context) {
-	userID := abortIfNoUserID(context)
+	userID := getCurrentUserId(context)
+	if userID == 0 {
+		context.AbortWithError(http.StatusUnauthorized, errors.New("Invalid session"))
+		return
+	}
+
 	username := context.Query("username")
 	err := application.FollowUser(persistence.GetDbConnection(), userID, username)
 	if err != nil {
@@ -25,7 +31,12 @@ func followUser(context *gin.Context) {
 }
 
 func unfollowUser(context *gin.Context) {
-	userID := abortIfNoUserID(context)
+	userID := getCurrentUserId(context)
+	if userID == 0 {
+		context.AbortWithError(http.StatusUnauthorized, errors.New("Invalid session"))
+		return
+	}
+
 	username := context.Query("username")
 	err := application.UnfollowUser(persistence.GetDbConnection(), userID, username)
 	if err != nil {
