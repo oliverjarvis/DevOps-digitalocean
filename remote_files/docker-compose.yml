@@ -2,7 +2,7 @@ version: '3.3'
 services:
   db:
     container_name: minitwit_db
-    image: ${DOCKER_USERNAME}/minitwit_db
+    image: postgres:14.1-alpine
     restart: always
     environment:
       - POSTGRES_USER=postgres
