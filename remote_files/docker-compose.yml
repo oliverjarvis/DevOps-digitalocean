@@ -13,10 +13,8 @@ services:
       - db:/var/lib/postgresql/data
       
   server:
-      container_name: ${DOCKER_USERNAME}/minitwit
-      build:
-        context: .
-        dockerfile: Dockerfile
+      container_name: minitwit
+      image: ${DOCKER_USERNAME}/minitwitimage
       ports:
         - "8080:8080"
       restart: always
