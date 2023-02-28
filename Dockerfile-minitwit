@@ -26,4 +26,4 @@ EXPOSE 8080
 
 WORKDIR /app/src
 
-CMD ["/app/server"]
+CMD ["/src/server"]
