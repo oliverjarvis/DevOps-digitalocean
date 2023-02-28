@@ -7,7 +7,7 @@ COPY go.sum ./
 RUN go mod download && go mod verify
 
 COPY src /app/src
-COPY src/web/templates /app/src/web/templates
+COPY src/web/templates /app/web/templates
 RUN go build /app/src/server.go
 
 EXPOSE 8080
