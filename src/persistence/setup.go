@@ -26,7 +26,7 @@ func InitDbConnection() *gorm.DB {
 
 
 func ConfigurePersistence() {
-	db := InitDbConnection()
+	db = InitDbConnection()
 
 	applyMigrations(db)
 	seed(db)
