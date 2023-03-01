@@ -7,11 +7,20 @@ import (
 	"gorm.io/gorm"
 )
 
+var db *gorm.DB
+
 func GetDbConnection() *gorm.DB {
 	dsn := "host=minitwit_db user=postgres password=postgres dbname=postgres port=5432 sslmode=disable"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic("Failed to connect to database")
+
+	if db == nil{
+		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		
+		if err != nil {
+			panic("Failed to connect to database")
+		}
+		if db != nil{
+			return db
+		}
 	}
 
 	return db
