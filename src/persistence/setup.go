@@ -10,7 +10,7 @@ import (
 var db *gorm.DB
 
 func GetDbConnection() *gorm.DB {
-	
+
 	return db
 }
 
@@ -23,6 +23,7 @@ func InitDbConnection() *gorm.DB {
 
 	return db
 }
+
 
 func ConfigurePersistence() {
 	db := InitDbConnection()
